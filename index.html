@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/img/icons/apple-icon.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <title>Pengenalan Hewan</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./css/materialize.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <header>
+        <!-- Navigasi -->
+        <nav class="red darken-2" role="navigation">
+            <div class="nav-wrapper container">
+                <a href="#" class="brand-logo" id="logo-container">Pengenalan Hewan</a>
+                <a href="#" class=" sidenav-trigger" data-target="nav-mobile">☰</a>
+
+                <ul class="topnav right hide-on-med-and-down">
+                </ul>
+                <ul class="sidenav" id="nav-mobile">
+                </ul>
+            </div>
+        </nav>
+        <!-- Akhir Navigasi -->
+    </header>
+    <main>
+        <div class="container" id="body-content">
+        </div>
+    </main>
+    <footer class="page-footer red darken-2">
+        <div>
+            <div class="container">
+                © 2014 Copyright Dicoding
+            </div>
+        </div>
+    </footer>
+    <script src="./js/jquery-2.1.4.min.js"></script>
+    <script src="./js/materialize.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            M.Sidenav.init($('.sidenav'));
+
+            $.get('nav.html', (nav) => {
+                $('.topnav, .sidenav').html(nav);
+            });
+
+            $('.topnav, .sidenav').click((e) => {
+                M.Sidenav.getInstance($('.sidenav')).close();
+                page = $(e.target).attr('href').substr(1);
+                loadPage(page);
+            });
+
+            let page = window.location.hash.substr(1);
+            if (page == '') page = 'mamalia';
+            loadPage(page);
+
+            function loadPage(page) {
+                $.get(`pages/${page}.html`, (data) => {
+                    $('#body-content').html(data);
+                }).error((er) => {
+                    if (er.status == 404) {
+                        $('#body-content').html('<p>Halaman tidak ditemukan.</p>');
+                    } else {
+                        $('#body-content').html('<p>Ups.. halaman tidak dapat diakses.</p>');
+                    }
+                });
+            };
+        });
+
+
+    </script>
+    <script>
+        $(document).ready(() => {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker
+                        .register('/service-worker.js')
+                        .then(() => {
+                            console.log('Pendaftaran ServiceWorker berhasil');
+                        })
+                        .catch(() => {
+                            console.log('Pendaftaran ServiceWorker gagal');
+                        });
+                });
+            } else {
+                console.log('ServiceWorker belum didukung browser ini.');
+            }
+        });
+    </script>
+</body>
+
+</html>
